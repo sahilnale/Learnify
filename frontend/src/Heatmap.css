@@ -1,0 +1,39 @@
+/* Heatmap.css */
+.grid-container-wrapper {
+    overflow-x: auto; /* Make the entire container scrollable */
+    max-width: 100%; /* Keep the container within the card */
+    white-space: nowrap; /* Ensure content doesn't wrap to new lines */
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(53, 1fr); /* 53 columns for 53 weeks */
+    gap: 4px; /* Small gap between days */
+    min-width: max-content; /* Ensure grid does not shrink */
+}
+
+.grid-item {
+    width: 12px;
+    height: 12px;
+    background-color: #ebedf0; /* Default grey for no activity */
+}
+
+.grid-item.active-1 {
+    background-color: #c6e48b; /* Light green */
+}
+
+.grid-item.active-2 {
+    background-color: #7bc96f; /* Medium green */
+}
+
+.grid-item.active-3 {
+    background-color: #239a3b; /* Dark green */
+}
+
+.grid-item.active-4 {
+    background-color: #196127; /* Very dark green */
+}
+
+.month-gap {
+    grid-column: span 1; /* Adding an extra column space between months */
+}
