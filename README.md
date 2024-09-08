@@ -31,16 +31,11 @@
 ## Current Progress
 
 - **Frontend Development**: 
-  - Dashboard, Learn, Progress, Profile, and To-Do pages are linked and under development.
-  - Cards for subjects and learning tasks are dynamically synced with the backend.
-  
-- **Backend Development**: 
-  - API endpoints are set up for user authentication, learning plan generation, and progress tracking.
-  - Integration with OpenAI API to generate custom learning plans.
+  - Static Dashboard, Learn, Progress, Profile, and To-Do pages are linked
 
 ## Installation and Setup
 
-To run this project locally, follow these steps:
+To run this project locally in the future, follow these steps:
 
 ### Backend (Django)
 
