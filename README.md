@@ -28,13 +28,7 @@
 /models        # Data models (MongoDB schemas for user, learning plans)
 ```
 
-## Current Progress
-
-- **Frontend Development**: 
-  - Static Dashboard, Learn, Progress, Profile, and To-Do pages are linked
-
-
-## Planned Features
+## Features
 
 - **Learning Recommendations**: Suggest additional topics based on the user’s current learning interests.
 - **Social Learning**: Allow users to share progress and collaborate with others.
