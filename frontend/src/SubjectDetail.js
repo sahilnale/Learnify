@@ -1,30 +1,35 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import Sidebar from './components/Sidebar.js';
 
 const SubjectDetail = ({ subjects }) => {
-  const { subjectName } = useParams();  // Get the subject name from URL
-  const subject = subjects.find((s) => s.subject === subjectName);  // Find the subject based on URL param
+  const { subjectName } = useParams();
+
+  // Find the subject that matches the subjectName
+  const subject = subjects.find((s) => s.subject === subjectName);
 
   if (!subject) {
     return <div>Subject not found</div>;
   }
 
   return (
-    <div className="flex h-screen">
-      <Sidebar activeItem="Learn" />
-      <div className="flex-grow p-8 bg-white h-screen">
-        <h1 className="text-4xl font-bold mb-8">{subject.subject}</h1>
-
-        {/* Display topics in a simple list */}
-        <ul className="list-disc list-inside space-y-4">
-          {subject.topics.map((topic, index) => (
-            <li key={index} className="text-lg text-gray-700">
-              {topic}
-            </li>
-          ))}
-        </ul>
-      </div>
+    <div className="flex h-screen overflow-hidden">
+      <Sidebar activeItem={'Learn'} />
+      <main className="flex-1 p-8 overflow-y-auto">
+        <h1 className="text-3xl font-bold mb-4">{subject.subject}</h1>
+        <section className="bg-white p-6 rounded-lg shadow">
+          <h2 className="text-2xl font-bold mb-4">Topics in {subject.subject}</h2>
+          <ul className="list-disc ml-6 space-y-2">
+            {subject.topics.map((topic, index) => (
+              <li key={index}>
+                <Link to={`/learn/subject/${encodeURIComponent(subject.subject)}/topic/${encodeURIComponent(topic.name)}`}>
+                  <span className="text-blue-500 hover:underline">{topic.name}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </main>
     </div>
   );
 };
