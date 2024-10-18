@@ -14,19 +14,10 @@
 ## Tech Stack
 
 - **Frontend**: React (MERN Stack)
-- **Backend**: Django (as external REST API for Python-based OpenAI integrations)
+- **Backend**: Node.js & Django (as external REST API for Python-based OpenAI integrations)
 - **Machine Learning**: OpenAI GPT-4 API for generating learning plans and curating resources
 - **Database**: MongoDB for managing user data, learning plans, and progress
 - **Deployment**: (To be determined)
-
-## Project Structure
-
-```
-/client        # React frontend
-/server        # Django backend
-/components    # Reusable frontend components (e.g., Dashboard, Learning Page, etc.)
-/models        # Data models (MongoDB schemas for user, learning plans)
-```
 
 ## Features
 
