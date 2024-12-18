@@ -9,39 +9,64 @@ const AddTopic = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
+
+    console.log('Form values on submit:', {
+      subjectName,
+      topicName,
+      duration,
+      userId: localStorage.getItem('userId'),
+    });
     e.preventDefault();
 
-    if (subjectName && topicName && duration) {
+    const userId = localStorage.getItem('userId'); // Retrieve the user ID from localStorage
+    console.log('User ID:', userId); // Debugging
+
+    if (subjectName && topicName && duration && userId) {
       try {
+        // Step 1: Create the subject
+        const subjectResponse = await fetch('http://localhost:5050/api/subjects', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            subject: subjectName,
+            userId,
+            topicIds: [], // Create the subject with no topics initially
+          }),
+        });
+
+        if (!subjectResponse.ok) {
+          const errorData = await subjectResponse.json();
+          console.error('Error creating subject:', errorData);
+          throw new Error('Failed to create subject');
+        }
+
+        const newSubject = await subjectResponse.json();
+        console.log('Created Subject:', newSubject);
+
+        // Step 2: Create the topic and link it to the subject
         const topicResponse = await fetch('http://localhost:5050/api/topics', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             name: topicName,
             resources: [`Duration: ${duration}`],
+            subjectId: newSubject._id, // Link the topic to the newly created subject
           }),
         });
 
-        if (!topicResponse.ok) throw new Error('Failed to create topic');
+        if (!topicResponse.ok) {
+          const errorData = await topicResponse.json();
+          console.error('Error creating topic:', errorData);
+          throw new Error('Failed to create topic');
+        }
+
         const newTopic = await topicResponse.json();
+        console.log('Created Topic:', newTopic);
 
-        const subjectResponse = await fetch('http://localhost:5050/api/subjects', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            subject: subjectName,
-            topicIds: [newTopic._id],
-            userId: localStorage.getItem('userId'), // Dynamically retrieve the user ID
-          }),
-        });
-
-        if (!subjectResponse.ok) throw new Error('Failed to create subject');
-        const newSubject = await subjectResponse.json();
-
-        console.log('Successfully created subject:', newSubject);
+        // Navigate to the Learn page after successful creation
         navigate('/learn');
       } catch (error) {
-        console.error('Error creating topic or subject:', error);
+        console.error('Error creating subject or topic:', error.message);
         alert('An error occurred. Please try again.');
       }
     } else {
@@ -64,30 +89,43 @@ const AddTopic = () => {
       <div className="flex-grow p-8 bg-white h-screen">
         <h1 className="text-4xl font-bold mb-8">Add a Topic</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Subject Name Input */}
           <div>
-            <label className="block text-lg font-semibold mb-2" htmlFor="subjectName">Subject</label>
+            <label className="block text-lg font-semibold mb-2" htmlFor="subjectName">
+              Subject Name
+            </label>
             <input
               type="text"
               id="subjectName"
               value={subjectName}
               onChange={(e) => setSubjectName(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded"
+              placeholder="Enter subject name"
               required
             />
           </div>
+
+          {/* Topic Name Input */}
           <div>
-            <label className="block text-lg font-semibold mb-2" htmlFor="topicName">Topic Name</label>
+            <label className="block text-lg font-semibold mb-2" htmlFor="topicName">
+              Topic Name
+            </label>
             <input
               type="text"
               id="topicName"
               value={topicName}
               onChange={(e) => setTopicName(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded"
+              placeholder="Enter topic name"
               required
             />
           </div>
+
+          {/* Duration Dropdown */}
           <div>
-            <label className="block text-lg font-semibold mb-2" htmlFor="duration">Duration</label>
+            <label className="block text-lg font-semibold mb-2" htmlFor="duration">
+              Duration
+            </label>
             <select
               id="duration"
               value={duration}
@@ -97,11 +135,18 @@ const AddTopic = () => {
             >
               <option value="">Select duration</option>
               {durationOptions.map((option) => (
-                <option key={option.value} value={option.value}>{option.label}</option>
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
               ))}
             </select>
           </div>
-          <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
             Add Topic
           </button>
         </form>

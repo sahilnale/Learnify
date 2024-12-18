@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Add useNavigate to handle navigation
-import axios from 'axios';  // Import Axios for making API requests
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const LoginPage = () => {
     const [loginData, setLoginData] = useState({
@@ -9,7 +9,7 @@ const LoginPage = () => {
     });
 
     const [error, setError] = useState('');
-    const navigate = useNavigate();  // Hook for navigating to another route
+    const navigate = useNavigate();
 
     // Handle form input changes
     const handleChange = (e) => {
@@ -24,15 +24,16 @@ const LoginPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Send POST request to your backend for login
+            // Send POST request to the backend for login
             const response = await axios.post('http://localhost:5050/api/auth/login', loginData);
             console.log('User logged in:', response.data);
 
-            // Handle successful login (e.g., store token and navigate)
-            localStorage.setItem('token', response.data.token); // Store JWT token (if applicable)
-            
-            // Redirect to dashboard or another page after successful login
-            navigate('/home');
+            // Store userId and token in localStorage
+            localStorage.setItem('userId', response.data.userId); // Save userId for future use
+            localStorage.setItem('token', response.data.token);  // Save JWT token
+
+            // Redirect to dashboard or home after successful login
+            navigate('/learn');
         } catch (error) {
             console.error('Error logging in:', error);
             setError(error.response?.data?.message || 'Invalid login credentials. Please try again.');
@@ -43,11 +44,11 @@ const LoginPage = () => {
         <div className="bg-white flex items-center justify-center min-h-screen">
             <div className="flex items-center justify-center w-full max-w-4xl mx-auto">
                 <div className="flex flex-col w-full">
-                    {/* Edu.io Logo moved to top-right */}
+                    {/* Edu.io Logo */}
                     <div className="w-full flex justify-left p-8">
-                        <Link to="/"> 
+                        <Link to="/">
                             <h1 className="text-5xl font-bold text-black">Edu.io</h1>
-                        </Link> 
+                        </Link>
                     </div>
                     {/* Login Form and Image Section */}
                     <div className="flex w-full">
@@ -80,7 +81,10 @@ const LoginPage = () => {
                                         required
                                     />
                                 </div>
-                                <button className="w-full bg-black text-white p-3 rounded shadow-md hover:bg-gray-800" type="submit">
+                                <button
+                                    className="w-full bg-black text-white p-3 rounded shadow-md hover:bg-gray-800"
+                                    type="submit"
+                                >
                                     Continue
                                 </button>
                             </form>

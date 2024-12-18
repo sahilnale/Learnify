@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from './components/Sidebar.js';
 import { Link } from 'react-router-dom';
 
@@ -25,17 +25,90 @@ const SubjectCard = ({ title, topics }) => {
       <div className="relative">
         {/* Scrollable Topic Cards */}
         <div ref={scrollRef} className="flex overflow-x-auto space-x-4 scrollbar-hide">
-          {topics.map((topic, index) => (
-            // Pass both topic name and subject name to the card for linking
-            <Card key={index} title={topic.name} subject={title} />
-          ))}
+          {topics && topics.length > 0 ? (
+            topics.map((topic, index) => (
+              // Pass both topic name and subject name to the card for linking
+              <Card key={index} title={topic.name} subject={title} />
+            ))
+          ) : (
+            <div className="text-gray-500">No topics available</div>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-const Dashboard = ({ subjects }) => {
+const Dashboard = () => {
+  const [subjects, setSubjects] = useState([]); // State to hold subjects
+  const [loading, setLoading] = useState(true); // State for loading indicator
+  const [error, setError] = useState(null); // State for error handling
+
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        setLoading(true); // Start loading
+        const response = await fetch('http://localhost:5050/api/subjects'); // Fetch subjects from the backend
+        if (!response.ok) {
+          throw new Error('Failed to fetch subjects');
+        }
+        const data = await response.json();
+        setSubjects(data); // Update the state with fetched subjects
+      } catch (err) {
+        console.error('Error fetching subjects:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false); // Stop loading
+      }
+    };
+
+    fetchSubjects(); // Fetch data when the component mounts
+  }, []);
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="flex h-screen overflow-hidden">
+        <Sidebar activeItem={'Learn'} />
+        <main className="flex-1 p-8 overflow-y-auto">
+          <h1 className="text-3xl font-bold mb-8">Topics</h1>
+          <p>Loading subjects...</p>
+        </main>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="flex h-screen overflow-hidden">
+        <Sidebar activeItem={'Learn'} />
+        <main className="flex-1 p-8 overflow-y-auto">
+          <h1 className="text-3xl font-bold mb-8">Topics</h1>
+          <p className="text-red-500">{error}</p>
+        </main>
+      </div>
+    );
+  }
+
+  // Show empty state if no subjects
+  if (subjects.length === 0) {
+    return (
+      <div className="flex h-screen overflow-hidden">
+        <Sidebar activeItem={'Learn'} />
+        <main className="flex-1 p-8 overflow-y-auto">
+          <h1 className="text-3xl font-bold mb-8">Topics</h1>
+          <p className="text-gray-500">No subjects available. Add a new subject to get started.</p>
+          <Link to="/learn/addtopic">
+            <button className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mt-4">
+              Add New Topic
+            </button>
+          </Link>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar activeItem={'Learn'} />
@@ -53,7 +126,7 @@ const Dashboard = ({ subjects }) => {
         {/* Subject Cards */}
         <div className="space-y-8">
           {subjects.map((subject, index) => (
-            <SubjectCard key={index} title={subject.subject} topics={subject.topics} />
+            <SubjectCard key={index} title={subject.subject} topics={subject.topics || []} />
           ))}
         </div>
       </main>
