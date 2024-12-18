@@ -5,6 +5,7 @@ const User = require('../models/User');
 // User registration
 // User registration
 exports.registerUser = async (req, res) => {
+    console.log('register attempt:');
     const { name, email, password } = req.body;
 
     try {

@@ -7,6 +7,11 @@ require('dotenv').config();
 const authRoutes = require('./routes/authRoutes');
 const subjectRoutes = require('./routes/subjectRoutes');
 
+const topicRoutes = require('./routes/topicRoutes');
+
+
+
+
 // Initialize Express app
 const app = express();
 
@@ -25,6 +30,7 @@ mongoose.connect(process.env.MONGO_URI, {
 // Routes
 app.use('/api/auth', authRoutes); // Authentication routes
 app.use('/api/subjects', subjectRoutes); // Subject routes
+app.use('/api/topics', topicRoutes);
 
 // Define the port
 const PORT = process.env.PORT || 5000;

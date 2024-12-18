@@ -1,9 +1,15 @@
-// routes/topicRoutes.js
 const express = require('express');
-const router = express.Router();
-const { getTopics, createTopic } = require('../controllers/topicController');
+const { createTopic, getTopics, getTopicsBySubject } = require('../controllers/topicController');
 
-router.get('/', getTopics);
+const router = express.Router();
+
+// Create a new topic
 router.post('/', createTopic);
+
+// Get all topics
+router.get('/', getTopics);
+
+// Get topics for a specific subject
+router.get('/subject/:subjectId', getTopicsBySubject);
 
 module.exports = router;

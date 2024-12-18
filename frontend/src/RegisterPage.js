@@ -27,13 +27,24 @@ const RegisterPage = () => {
         event.preventDefault(); // Prevents the default form submission behavior
       
         try {
-          const registerData = { name, email, password };
-          const response = await axios.post('http://localhost:5050/api/auth/register', registerData);
-          console.log('Registered successfully:', response.data);
+            const registerData = {
+                name: userData.name,
+                email: userData.email,
+                password: userData.password,
+            };
+            const response = await axios.post('http://localhost:5050/api/auth/register', registerData);
+            console.log('Registered successfully:', response.data);
+    
+            setSuccess(true); // Indicate success
+            setError(''); // Clear any error messages
+    
+            setTimeout(() => navigate('/login'), 2000); // Redirect to login page after 2 seconds
         } catch (error) {
-          console.error('Error registering:', error);
+            console.error('Error registering:', error);
+            setError(error.response?.data?.message || 'Registration failed. Please try again.');
         }
-      };
+    };
+    
       
 
     return (
